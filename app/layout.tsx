@@ -1,4 +1,6 @@
-import { Geist, Geist_Mono, Inter } from "next/font/google"
+import { 
+   Geist_Mono, Inter, IBM_Plex_Sans_Thai_Looped } from "next/font/google"
+   import { Analytics } from "@vercel/analytics/next"
 
 import "./globals.css"
 import { ThemeProvider } from "@/components/theme-provider"
@@ -6,6 +8,7 @@ import { cn } from "@/lib/utils";
 import { Metadata } from "next";
 
 const inter = Inter({subsets:['latin'],variable:'--font-sans'})
+const ibmPlexSansThaiLooped = IBM_Plex_Sans_Thai_Looped({subsets:['latin'],variable:'--font-sans',weight:['100','200','300','400','500','600','700']})
 
 const fontMono = Geist_Mono({
   subsets: ["latin"],
@@ -40,10 +43,11 @@ export default function RootLayout({
     <html
       lang="en"
       suppressHydrationWarning
-      className={cn("antialiased", fontMono.variable, "font-sans", inter.variable)}
+      className={cn("antialiased", fontMono.variable, "font-sans", inter.variable, ibmPlexSansThaiLooped.variable)}
     >
       <body>
         <ThemeProvider>{children}</ThemeProvider>
+        <Analytics />
       </body>
     </html>
   )
