@@ -33,6 +33,7 @@ import {
 } from "lucide-react"
 import { Separator } from "./ui/separator"
 import { totalSaved, useGoalStore } from "@/store/useGoalStore"
+import { useMoney } from "@/components/providers/profile-provider"
 import type { Goal } from "@/types"
 
 type FormErrors = {
@@ -72,6 +73,7 @@ type GoalFormDialogProps = {
 export function GoalFormDialog({ mode = "create", goal, trigger }: GoalFormDialogProps) {
   const addGoal = useGoalStore((state) => state.addGoal)
   const updateGoal = useGoalStore((state) => state.updateGoal)
+  const money = useMoney()
 
   const isEdit = mode === "edit"
   const savedSoFar = goal ? totalSaved(goal) : 0
@@ -189,7 +191,7 @@ export function GoalFormDialog({ mode = "create", goal, trigger }: GoalFormDialo
               <FieldLabel htmlFor="goal-target">Target Amount</FieldLabel>
               <InputGroup>
                 <InputGroupAddon>
-                  <InputGroupText>UGX</InputGroupText>
+                  <InputGroupText>{money.code}</InputGroupText>
                 </InputGroupAddon>
                 <InputGroupInput
                   id="goal-target"

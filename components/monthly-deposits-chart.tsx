@@ -4,6 +4,7 @@ import { Bar, BarChart, CartesianGrid, XAxis } from "recharts"
 
 import type { MonthlyDeposit } from "@/hooks/useMonthlyDeposits"
 import { cn } from "@/lib/utils"
+import { useMoney } from "@/components/providers/profile-provider"
 import {
   Card,
   CardContent,
@@ -17,12 +18,6 @@ import {
   ChartTooltipContent,
   type ChartConfig,
 } from "@/components/ui/chart"
-
-const amountFormat = new Intl.NumberFormat("en-US", {
-  style: "currency",
-  currency: "USD",
-  maximumFractionDigits: 0,
-})
 
 const chartConfig = {
   total: {
@@ -44,6 +39,7 @@ export default function MonthlyDepositsChart({
   title = "Monthly deposits",
   className,
 }: MonthlyDepositsChartProps) {
+  const money = useMoney()
   const max = Math.max(...data.map((d) => d.total), 0)
   const total = data.reduce((acc, curr) => acc + curr.total, 0)
 
@@ -52,7 +48,7 @@ export default function MonthlyDepositsChart({
       <CardHeader>
         <CardTitle>{title}</CardTitle>
         <CardDescription>
-          {amountFormat.format(total)} deposited this year
+          {money.formatWhole(total)} deposited this year
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -83,7 +79,7 @@ export default function MonthlyDepositsChart({
                   <ChartTooltipContent
                     className="w-[150px]"
                     nameKey="total"
-                    formatter={(value) => amountFormat.format(Number(value))}
+                    formatter={(value) => money.formatWhole(Number(value))}
                   />
                 }
               />

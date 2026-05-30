@@ -1,6 +1,7 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import { NewGoalButton } from './new-goal-button'
+import UserMenu from './user-menu'
 
 export default function Header() {
   return (
@@ -11,7 +12,10 @@ export default function Header() {
                 <Image src="/icons/logo-small.svg" alt="Savings Tracker" width={32} height={32} className="size-8" />
                 <span className="text-lg font-semibold tracking-tight">Savings Tracker</span>
             </Link>
-            <NewGoalButton />
+            <div className="flex items-center gap-3">
+              <NewGoalButton />
+              <UserMenu />
+            </div>
             </div>
         </div>
         </header>

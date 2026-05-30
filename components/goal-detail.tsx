@@ -4,17 +4,12 @@ import Link from "next/link"
 import { ChevronLeft, Check } from "lucide-react"
 
 import { isCompleted, progressOf, totalSaved, useGoalStore } from "@/store/useGoalStore"
+import { useMoney } from "@/components/providers/profile-provider"
 import { cn } from "@/lib/utils"
 import AddDepositForm from "./add-deposit-form"
 import DepositHistory from "./deposit-history"
 import DeleteGoalDialog from "./delete-goal-dialog"
 import { EditGoalButton } from "./new-goal-button"
-
-const money = new Intl.NumberFormat("en-US", {
-  style: "currency",
-  currency: "USD",
-  maximumFractionDigits: 2,
-})
 
 const dateFormat = new Intl.DateTimeFormat("en-US", {
   month: "short",
@@ -25,6 +20,7 @@ const dateFormat = new Intl.DateTimeFormat("en-US", {
 const STRIPES = "repeating-linear-gradient(45deg, rgba(255,255,255,.3) 0 2px, transparent 2px 7px)"
 
 export default function GoalDetail({ goalId }: { goalId: string }) {
+  const money = useMoney()
   const goal = useGoalStore((state) => state.goals.find((g) => g.id === goalId))
 
   if (!goal) {
@@ -141,6 +137,7 @@ function CompleteHero({
   goal: { deadline?: string; deposits: unknown[] }
   saved: number
 }) {
+  const money = useMoney()
   const count = goal.deposits.length
   return (
     <div className="rounded-2xl bg-linear-to-br from-red-700 via-orange-600 to-orange-500 p-6 text-white">

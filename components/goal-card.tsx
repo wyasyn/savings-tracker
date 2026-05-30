@@ -1,5 +1,8 @@
+"use client"
+
 import type { Goal } from "@/types"
 import { getGoalStatus, progressOf, totalSaved } from "@/store/useGoalStore"
+import { useMoney } from "@/components/providers/profile-provider"
 import { cn } from "@/lib/utils"
 
 export type GoalCardSize = "default" | "tall" | "wide"
@@ -10,12 +13,6 @@ type GoalCardProps = {
   className?: string
 }
 
-const money = new Intl.NumberFormat("en-US", {
-  style: "currency",
-  currency: "USD",
-  maximumFractionDigits: 0,
-})
-
 const dateFormat = new Intl.DateTimeFormat("en-US", {
   month: "short",
   day: "numeric",
@@ -25,6 +22,7 @@ const dateFormat = new Intl.DateTimeFormat("en-US", {
 const STRIPES = "repeating-linear-gradient(45deg, rgba(255,255,255,.3) 0 2px, transparent 2px 7px)"
 
 export default function GoalCard({ goal, size = "default", className }: GoalCardProps) {
+  const money = useMoney()
   const status = getGoalStatus(goal)
   const saved = totalSaved(goal)
   const percent = Math.round(progressOf(goal) * 100)
@@ -102,7 +100,8 @@ export default function GoalCard({ goal, size = "default", className }: GoalCard
           featured ? "text-white/80" : "text-muted-foreground"
         )}
       >
-        {money.format(saved)} of {goal.target != null ? money.format(goal.target) : "—"}
+        {money.formatWhole(saved)} of{" "}
+        {goal.target != null ? money.formatWhole(goal.target) : "—"}
         {"  •  "}
         {goal.deadline ? `Due ${dateFormat.format(new Date(goal.deadline))}` : "No deadline"}
       </p>

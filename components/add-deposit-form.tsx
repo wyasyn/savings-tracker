@@ -4,19 +4,23 @@ import { useState } from "react"
 
 import type { Goal } from "@/types"
 import { totalSaved, useGoalStore } from "@/store/useGoalStore"
+import { useMoney, useProfile } from "@/components/providers/profile-provider"
+import { SAVINGS_CHANNELS } from "@/lib/locale"
 import { Button } from "@/components/ui/button"
-
-const money = new Intl.NumberFormat("en-US", {
-  style: "currency",
-  currency: "USD",
-  maximumFractionDigits: 2,
-})
 
 export default function AddDepositForm({ goal }: { goal: Goal }) {
   const addDeposit = useGoalStore((state) => state.addDeposit)
+  const money = useMoney()
+  const profile = useProfile()
+
+  // Offer the channels picked at onboarding; fall back to all if none stored.
+  const channelOptions = profile.channels.length
+    ? SAVINGS_CHANNELS.filter((c) => profile.channels.includes(c.value))
+    : SAVINGS_CHANNELS
 
   const [amount, setAmount] = useState("")
   const [note, setNote] = useState("")
+  const [channel, setChannel] = useState<string>(channelOptions[0]?.value ?? "")
   const [error, setError] = useState<string | null>(null)
 
   const saved = totalSaved(goal)
@@ -35,7 +39,7 @@ export default function AddDepositForm({ goal }: { goal: Goal }) {
       return
     }
 
-    addDeposit(goal.id, value, note.trim() || undefined)
+    addDeposit(goal.id, value, note.trim() || undefined, channel || undefined)
     setAmount("")
     setNote("")
     setError(null)
@@ -54,7 +58,7 @@ export default function AddDepositForm({ goal }: { goal: Goal }) {
           Amount
         </label>
         <div className="flex items-center gap-2 rounded-lg border bg-muted/40 px-3 focus-within:border-ring focus-within:ring-3 focus-within:ring-ring/50">
-          <span className="text-muted-foreground">$</span>
+          <span className="text-muted-foreground">{money.symbol}</span>
           <input
             id="deposit-amount"
             type="number"
@@ -72,6 +76,26 @@ export default function AddDepositForm({ goal }: { goal: Goal }) {
           />
         </div>
       </div>
+
+      {channelOptions.length > 1 && (
+        <div className="mt-4 space-y-2">
+          <label htmlFor="deposit-channel" className="text-sm font-medium text-foreground">
+            Channel
+          </label>
+          <select
+            id="deposit-channel"
+            value={channel}
+            onChange={(event) => setChannel(event.target.value)}
+            className="h-11 w-full rounded-lg border bg-muted/40 px-3 text-base outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
+          >
+            {channelOptions.map((option) => (
+              <option key={option.value} value={option.value}>
+                {option.label}
+              </option>
+            ))}
+          </select>
+        </div>
+      )}
 
       <div className="mt-4 space-y-2">
         <label htmlFor="deposit-note" className="text-sm font-medium text-foreground">

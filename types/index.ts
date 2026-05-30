@@ -2,6 +2,8 @@ type Deposit = {
   id: string;
   amount: number;
   note?: string;
+  /** Channel the money came through: "bank" | "mobile_money" | "sacco" | "cash". */
+  channel?: string;
   createdAt: string;
 };
 

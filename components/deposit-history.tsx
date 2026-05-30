@@ -1,12 +1,10 @@
+"use client"
+
 import { ArrowDown } from "lucide-react"
 
 import type { Goal } from "@/types"
-
-const money = new Intl.NumberFormat("en-US", {
-  style: "currency",
-  currency: "USD",
-  maximumFractionDigits: 2,
-})
+import { channelLabel } from "@/lib/locale"
+import { useMoney } from "@/components/providers/profile-provider"
 
 const dateFormat = new Intl.DateTimeFormat("en-US", {
   month: "short",
@@ -15,6 +13,7 @@ const dateFormat = new Intl.DateTimeFormat("en-US", {
 })
 
 export default function DepositHistory({ goal }: { goal: Goal }) {
+  const money = useMoney()
   // Most recent first.
   const deposits = [...goal.deposits].sort(
     (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
@@ -39,18 +38,13 @@ export default function DepositHistory({ goal }: { goal: Goal }) {
                 <ArrowDown className="size-4" />
               </span>
               <div className="min-w-0 flex-1">
-                {deposit.note ? (
-                  <>
-                    <p className="truncate text-sm font-medium text-foreground">{deposit.note}</p>
-                    <p className="text-xs text-muted-foreground">
-                      {dateFormat.format(new Date(deposit.createdAt))}
-                    </p>
-                  </>
-                ) : (
-                  <p className="text-sm text-muted-foreground">
-                    {dateFormat.format(new Date(deposit.createdAt))}
-                  </p>
+                {deposit.note && (
+                  <p className="truncate text-sm font-medium text-foreground">{deposit.note}</p>
                 )}
+                <p className={deposit.note ? "text-xs text-muted-foreground" : "text-sm text-muted-foreground"}>
+                  {dateFormat.format(new Date(deposit.createdAt))}
+                  {deposit.channel ? ` · ${channelLabel(deposit.channel)}` : ""}
+                </p>
               </div>
               <span className="shrink-0 text-sm font-semibold text-emerald-400">
                 +{money.format(deposit.amount)}
