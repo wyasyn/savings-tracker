@@ -21,6 +21,16 @@ export const user = pgTable("user", {
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
   updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
 
+  // --- better-auth admin plugin fields ---
+  /** App role: "admin" grants access to the admin dashboard; null/"user" otherwise. */
+  role: text("role"),
+  /** Whether the user is banned (blocked from signing in). */
+  banned: boolean("banned").notNull().default(false),
+  /** Optional reason shown/stored when a user is banned. */
+  banReason: text("ban_reason"),
+  /** When the ban lifts; null means the ban never expires. */
+  banExpires: timestamp("ban_expires", { withTimezone: true }),
+
   // --- Savings Tracker profile (set during onboarding) ---
   /** Preferred display name in-app (defaults to the Google name). */
   preferredName: text("preferred_name"),
@@ -51,6 +61,8 @@ export const session = pgTable("session", {
   userId: text("user_id")
     .notNull()
     .references(() => user.id, { onDelete: "cascade" }),
+  /** Set on an admin's session while impersonating another user; their own id. */
+  impersonatedBy: text("impersonated_by"),
 })
 
 export const account = pgTable("account", {

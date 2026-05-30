@@ -2,12 +2,13 @@ import { redirect } from 'next/navigation'
 
 import Header from '@/components/header'
 import { ProfileProvider } from '@/components/providers/profile-provider'
-import { getCurrentUser, isOnboarded } from '@/lib/session'
+import { getCurrentUser, getServerSession, isOnboarded } from '@/lib/session'
+import { isAdmin } from '@/lib/admin'
 import { getGoalsForUser } from '@/lib/goals'
 import { GoalStoreProvider } from '@/store/useGoalStore'
 
 export default async function MainLayout({ children }: { children: React.ReactNode }) {
-  const user = await getCurrentUser()
+  const [user, session] = await Promise.all([getCurrentUser(), getServerSession()])
 
   // Middleware already redirects when the session cookie is missing; this is the
   // authoritative check (and the only place that can read the DB).
@@ -29,6 +30,8 @@ export default async function MainLayout({ children }: { children: React.ReactNo
         email: user.email,
         currency: user.currency ?? 'USD',
         channels: user.savingsChannels ?? [],
+        isAdmin: isAdmin(user),
+        isImpersonating: !!session?.session.impersonatedBy,
       }}
     >
       <GoalStoreProvider goals={goals}>

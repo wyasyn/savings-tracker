@@ -9,6 +9,10 @@ export type Profile = {
   currency: string
   /** Savings channels chosen at onboarding. */
   channels: string[]
+  /** Whether this user can reach the admin dashboard. */
+  isAdmin: boolean
+  /** True when an admin is currently impersonating this account. */
+  isImpersonating: boolean
 }
 
 const ProfileContext = createContext<Profile | null>(null)

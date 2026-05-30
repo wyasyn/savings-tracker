@@ -8,6 +8,13 @@
       "when": 1780154535772,
       "tag": "0000_silent_titania",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1780172017275,
+      "tag": "0001_bitter_scarlet_spider",
+      "breakpoints": true
     }
   ]
 }

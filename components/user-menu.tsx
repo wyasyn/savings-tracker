@@ -1,8 +1,9 @@
 "use client"
 
 import { useState } from "react"
+import Link from "next/link"
 import { useRouter } from "next/navigation"
-import { LogOut } from "lucide-react"
+import { LogOut, ShieldCheck, UserX } from "lucide-react"
 
 import { authClient } from "@/lib/auth-client"
 import { useProfile } from "@/components/providers/profile-provider"
@@ -18,13 +19,21 @@ function initials(name: string, email: string) {
 
 export default function UserMenu() {
   const router = useRouter()
-  const { name, email } = useProfile()
+  const { name, email, isAdmin, isImpersonating } = useProfile()
   const [signingOut, setSigningOut] = useState(false)
+  const [stopping, setStopping] = useState(false)
 
   async function signOut() {
     setSigningOut(true)
     await authClient.signOut()
     router.replace("/login")
+    router.refresh()
+  }
+
+  async function stopImpersonating() {
+    setStopping(true)
+    await authClient.admin.stopImpersonating()
+    router.replace("/admin")
     router.refresh()
   }
 
@@ -44,6 +53,29 @@ export default function UserMenu() {
           <p className="truncate text-xs text-muted-foreground">{email}</p>
         </div>
         <div className="my-1 h-px bg-border" />
+        {isAdmin && !isImpersonating && (
+          <Button
+            asChild
+            variant="ghost"
+            className="h-9 w-full justify-start gap-2 rounded-lg px-2 text-sm"
+          >
+            <Link href="/admin">
+              <ShieldCheck className="size-4" />
+              Admin dashboard
+            </Link>
+          </Button>
+        )}
+        {isImpersonating && (
+          <Button
+            variant="ghost"
+            onClick={stopImpersonating}
+            disabled={stopping}
+            className="h-9 w-full justify-start gap-2 rounded-lg px-2 text-sm"
+          >
+            <UserX className="size-4" />
+            {stopping ? "Stopping…" : "Stop impersonating"}
+          </Button>
+        )}
         <Button
           variant="ghost"
           onClick={signOut}
