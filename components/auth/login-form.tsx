@@ -6,6 +6,8 @@ import { Loader2 } from "lucide-react"
 
 import { authClient } from "@/lib/auth-client"
 import { Button } from "@/components/ui/button"
+import Image from "next/image"
+import { Input } from "../ui/input"
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
@@ -33,7 +35,7 @@ function GoogleIcon() {
 }
 
 const inputClass =
-  "h-12 w-full rounded-xl border border-neutral-700 bg-neutral-800/60 px-4 text-base text-white outline-none transition-colors placeholder:text-neutral-500 focus-visible:border-orange-500 focus-visible:ring-2 focus-visible:ring-orange-500/40"
+  "h-12 w-full rounded-xl border   px-4 text-base text-white outline-none transition-colors placeholder:text-neutral-500 focus-visible:border-orange-500 focus-visible:ring-2 focus-visible:ring-orange-500/40"
 
 export default function LoginForm() {
   const router = useRouter()
@@ -97,15 +99,25 @@ export default function LoginForm() {
   }
 
   return (
-    <div className="w-full max-w-sm">
-      <h1 className="text-3xl font-bold tracking-tight text-white">Welcome back</h1>
-      <p className="mt-1 text-sm text-neutral-400">
+    <div className="w-full flex flex-col items-center justify-center max-w-sm">
+      
+          <Image
+            src="/icons/logo-large.svg"
+            alt="Savings Tracker"
+            width={250}
+            height={250}
+            className="mb-4 dark:invert-0 invert"
+          />
+         
+     
+     
+      <p className="mt-1 text-sm ">
         {step === "email"
           ? "Sign in or create your account"
           : `Enter the code we sent to ${email}`}
       </p>
 
-      <div className="my-7 h-px w-full bg-neutral-800" />
+      <div className="my-7 h-px w-full bg-border " />
 
       {step === "email" ? (
         <div className="flex flex-col gap-4">
@@ -113,16 +125,16 @@ export default function LoginForm() {
             type="button"
             onClick={continueWithGoogle}
             disabled={googleLoading}
-            className="h-12 w-full gap-3 rounded-full border border-neutral-700 bg-white text-base font-medium text-neutral-900 hover:bg-neutral-100"
+            className="h-12 w-full gap-3 rounded-full "
           >
             {googleLoading ? <Loader2 className="size-5 animate-spin" /> : <GoogleIcon />}
             Continue with Google
           </Button>
 
-          <div className="flex items-center gap-4 py-1 text-xs text-neutral-500">
-            <span className="h-px flex-1 bg-neutral-800" />
+        <div className="flex items-center gap-4 py-1 text-xs ">
+            <span className="h-px flex-1 bg-border " />
             or
-            <span className="h-px flex-1 bg-neutral-800" />
+            <span className="h-px flex-1 bg-border " />
           </div>
 
           <form
@@ -134,10 +146,10 @@ export default function LoginForm() {
             noValidate
           >
             <div className="space-y-2">
-              <label htmlFor="email" className="text-sm font-medium text-white">
+              <label htmlFor="email" className="text-sm font-medium ">
                 Email address
               </label>
-              <input
+              <Input
                 id="email"
                 type="email"
                 autoComplete="email"
@@ -153,7 +165,7 @@ export default function LoginForm() {
               />
             </div>
 
-            {error && <p className="text-sm text-red-400">{error}</p>}
+            {error && <p className="text-sm text-destructive ">{error}</p>}
 
             <Button
               type="submit"
@@ -175,7 +187,7 @@ export default function LoginForm() {
           noValidate
         >
           <div className="space-y-2">
-            <label htmlFor="otp" className="text-sm font-medium text-white">
+            <label htmlFor="otp" className="text-sm font-medium ">
               6-digit code
             </label>
             <input
@@ -195,7 +207,7 @@ export default function LoginForm() {
             />
           </div>
 
-          {error && <p className="text-sm text-red-400">{error}</p>}
+          {error && <p className="text-sm text-destructive ">{error}</p>}
 
           <Button
             type="submit"
@@ -214,7 +226,7 @@ export default function LoginForm() {
                 setOtp("")
                 setError(null)
               }}
-              className="font-medium text-neutral-400 transition-colors hover:text-white"
+              className="font-medium  transition-colors hover:text-white"
             >
               Use a different email
             </button>
@@ -222,7 +234,7 @@ export default function LoginForm() {
               type="button"
               onClick={() => sendCode("resend")}
               disabled={resending}
-              className="font-medium text-orange-500 transition-colors hover:text-orange-400 disabled:opacity-50"
+              className="font-medium  transition-colors hover:text-orange-400 disabled:opacity-50"
             >
               {resending ? "Sending…" : "Resend code"}
             </button>
@@ -230,13 +242,13 @@ export default function LoginForm() {
         </form>
       )}
 
-      <p className="mt-8 text-center text-xs text-neutral-500">
+      <p className="mt-8 text-center text-xs text-muted-foreground ">
         By continuing you agree to our{" "}
-        <a href="/terms" className="text-neutral-300 underline underline-offset-2 hover:text-white">
+        <a href="/terms" className="text-foreground underline underline-offset-2 hover:text-foreground/80">
           Terms of Use
         </a>{" "}
         and{" "}
-        <a href="/privacy" className="text-neutral-300 underline underline-offset-2 hover:text-white">
+        <a href="/privacy" className="text-foreground underline underline-offset-2 hover:text-foreground/80">
           Privacy Policy
         </a>
         .

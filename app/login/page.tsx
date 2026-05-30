@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 
 export default function LoginPage() {
   return (
-    <div className="flex min-h-svh bg-neutral-950 p-3 md:p-4">
+    <div className="flex min-h-svh  p-3 md:p-4">
       {/* Brand panel */}
       <aside className="relative hidden w-1/2 max-w-xl overflow-hidden rounded-3xl bg-linear-to-b from-orange-500 to-orange-600 p-10 md:flex md:flex-col md:justify-between">
         <Image
@@ -33,18 +33,7 @@ export default function LoginPage() {
 
       {/* Auth panel */}
       <main className="flex flex-1 flex-col px-6 py-10 sm:px-12 md:px-16 lg:px-24">
-        <div className="flex items-center gap-2">
-          <Image
-            src="/icons/logo-small.svg"
-            alt="Savings Tracker"
-            width={32}
-            height={32}
-            className="size-8"
-          />
-          <span className="text-lg font-semibold tracking-tight text-white">
-            Savings Tracker
-          </span>
-        </div>
+       
 
         <div className="flex flex-1 items-center justify-center">
           <LoginForm />
