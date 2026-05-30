@@ -104,8 +104,9 @@ export default function LoginForm() {
           <Image
             src="/icons/logo-large.svg"
             alt="Savings Tracker"
-            width={250}
-            height={250}
+            width={230}
+            height={40}
+            style={{ height: "auto" }}
             className="mb-4 dark:invert-0 invert"
           />
          

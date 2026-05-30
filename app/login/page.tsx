@@ -17,6 +17,7 @@ export default function LoginPage() {
           alt=""
           width={360}
           height={360}
+          loading="eager"
           aria-hidden
           className="pointer-events-none absolute -right-12 bottom-8 opacity-20"
         />
