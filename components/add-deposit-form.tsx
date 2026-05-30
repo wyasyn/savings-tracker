@@ -86,10 +86,14 @@ export default function AddDepositForm({ goal }: { goal: Goal }) {
             id="deposit-channel"
             value={channel}
             onChange={(event) => setChannel(event.target.value)}
-            className="h-11 w-full rounded-lg border bg-muted/40 px-3 text-base outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
+            className="h-11 w-full rounded-lg border bg-muted/40 px-3 text-base text-foreground outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
           >
             {channelOptions.map((option) => (
-              <option key={option.value} value={option.value}>
+              <option
+                key={option.value}
+                value={option.value}
+                className="bg-popover text-popover-foreground"
+              >
                 {option.label}
               </option>
             ))}
