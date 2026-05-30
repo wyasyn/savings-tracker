@@ -1,7 +1,7 @@
 import { redirect } from 'next/navigation'
 
 import Header from '@/components/header'
-import { getCurrentUser } from '@/lib/session'
+import { getCurrentUser, isOnboarded } from '@/lib/session'
 
 export default async function MainLayout({ children }: { children: React.ReactNode }) {
   const user = await getCurrentUser()
@@ -12,7 +12,10 @@ export default async function MainLayout({ children }: { children: React.ReactNo
     redirect('/login')
   }
 
-  // Stage 2 adds: if (!isOnboarded(user)) redirect('/onboarding')
+  // First-time users must finish onboarding before reaching the app.
+  if (!isOnboarded(user)) {
+    redirect('/onboarding')
+  }
 
   return (
     <>
