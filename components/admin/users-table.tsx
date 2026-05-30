@@ -94,12 +94,13 @@ export function UsersTable({
       />
 
       <div className="overflow-hidden rounded-xl border">
-        {/* Header (desktop only) */}
-        <div className="hidden grid-cols-[1fr_auto_auto_auto] gap-4 border-b bg-muted/50 px-4 py-2.5 text-xs font-medium text-muted-foreground sm:grid">
+        {/* Header (desktop only) — columns must match UserRow's grid template */}
+        <div className="hidden grid-cols-[1fr_6rem_6rem_7rem_2.5rem] gap-4 border-b bg-muted/50 px-4 py-2.5 text-xs font-medium text-muted-foreground sm:grid">
           <span>User</span>
           <span>Role</span>
           <span>Status</span>
           <span className="text-right">Joined</span>
+          <span aria-hidden />
         </div>
 
         {filtered.length === 0 ? (
@@ -177,10 +178,10 @@ function UserRow({ user, isSelf }: { user: AdminUser; isSelf: boolean }) {
     : null
 
   return (
-    <li className="px-4 py-3">
-      <div className="grid grid-cols-1 gap-3 sm:grid-cols-[1fr_auto_auto_auto] sm:items-center sm:gap-4">
+    <li className="relative px-4 py-3">
+      <div className="flex flex-col gap-3 sm:grid sm:grid-cols-[1fr_6rem_6rem_7rem_2.5rem] sm:items-center sm:gap-4">
         {/* User identity */}
-        <div className="flex min-w-0 items-center gap-3">
+        <div className="flex min-w-0 items-center gap-3 pr-10 sm:pr-0">
           <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-muted text-xs font-semibold text-muted-foreground">
             {initials(user.name, user.email)}
           </span>
@@ -199,21 +200,26 @@ function UserRow({ user, isSelf }: { user: AdminUser; isSelf: boolean }) {
           </div>
         </div>
 
-        {/* Role */}
-        <div className="sm:justify-self-start">
-          <RolePill role={user.role} />
-        </div>
+        {/* Role / Status / Joined — inline on mobile, grid columns on desktop */}
+        <div className="flex flex-wrap items-center gap-2 sm:contents">
+          {/* Role */}
+          <div className="sm:justify-self-start">
+            <RolePill role={user.role} />
+          </div>
 
-        {/* Status */}
-        <div className="sm:justify-self-start">
-          <StatusPill user={user} />
-        </div>
+          {/* Status */}
+          <div className="sm:justify-self-start">
+            <StatusPill user={user} />
+          </div>
 
-        {/* Joined + actions */}
-        <div className="flex items-center justify-between gap-3 sm:justify-end">
-          <span className="text-xs text-muted-foreground sm:text-right">
+          {/* Joined */}
+          <div className="text-xs text-muted-foreground sm:justify-self-end sm:text-right">
             {dateFmt.format(new Date(user.createdAt))}
-          </span>
+          </div>
+        </div>
+
+        {/* Actions — top-right on mobile, last column on desktop */}
+        <div className="absolute right-4 top-3 sm:static sm:justify-self-end">
           {isSelf ? (
             <span className="inline-block size-8" aria-hidden />
           ) : (
