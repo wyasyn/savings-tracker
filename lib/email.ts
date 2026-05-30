@@ -14,7 +14,7 @@ export async function sendOtpEmail(email: string, otp: string) {
     return
   }
 
-  await resend.emails.send({
+  const { error } = await resend.emails.send({
     from: FROM,
     to: email,
     subject: `${otp} is your Savings Tracker code`,
@@ -28,4 +28,10 @@ export async function sendOtpEmail(email: string, otp: string) {
       </div>
     `,
   })
+
+  // Resend reports failures in `error` rather than throwing. Surface it so a
+  // bad sender/domain fails loudly instead of looking like a sent email.
+  if (error) {
+    throw new Error(`Failed to send sign-in code: ${error.message}`)
+  }
 }
