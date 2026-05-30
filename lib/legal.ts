@@ -3,8 +3,8 @@
  * (Terms of Use, Privacy Policy) read from here so there is one place to change.
  */
 export const LEGAL = {
-  /** TODO: replace with your registered business or personal trading name. */
-  operator: "Savings Tracker",
+  /** The individual or registered business legally operating the app. */
+  operator: "Yasin Walum",
   appName: "Savings Tracker",
   contactEmail: "ywalum@gmail.com",
   jurisdiction: "Uganda",
