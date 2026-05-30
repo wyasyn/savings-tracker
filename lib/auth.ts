@@ -1,7 +1,7 @@
 import { betterAuth } from "better-auth"
 import { drizzleAdapter } from "better-auth/adapters/drizzle"
 import { nextCookies } from "better-auth/next-js"
-import { emailOTP } from "better-auth/plugins"
+import { admin, emailOTP } from "better-auth/plugins"
 
 import { db, schema } from "@/lib/db"
 import { sendOtpEmail } from "@/lib/email"
@@ -39,6 +39,14 @@ export const auth = betterAuth({
         await sendOtpEmail(email, otp)
       },
     }),
+    admin({
+      // Users with this role can reach the admin dashboard and manage others.
+      adminRoles: ["admin"],
+      // Every new account starts as a normal user; admins are promoted explicitly.
+      defaultRole: "user",
+    }),
+    // nextCookies must stay last so it can flush Set-Cookie headers from any
+    // plugin action (e.g. impersonation) called inside a server action.
     nextCookies(),
   ],
 })
