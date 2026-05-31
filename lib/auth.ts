@@ -6,6 +6,8 @@ import { expo } from "@better-auth/expo"
 
 import { db, schema } from "@/lib/db"
 import { sendOtpEmail } from "@/lib/email"
+import { eq } from "drizzle-orm"
+import { account, deposit, goal, session } from "./db/schema"
 
 const googleConfigured =
   !!process.env.GOOGLE_CLIENT_ID && !!process.env.GOOGLE_CLIENT_SECRET
@@ -36,6 +38,17 @@ export const auth = betterAuth({
   }),
   // No passwords anywhere — sign-in is Google OAuth or a 6-digit email code.
   emailAndPassword: { enabled: false },
+  user: {
+    deleteUser: {
+      enabled: true,
+      before: async ({ userId }: { userId: string }) => {
+        await db.delete(goal).where(eq(goal.userId, userId))
+        await db.delete(deposit).where(eq(deposit.userId, userId))
+        await db.delete(session).where(eq(session.userId, userId))
+        await db.delete(account).where(eq(account.userId, userId))
+      },
+    },
+  },
   socialProviders: googleConfigured
     ? {
         google: {
