@@ -2,6 +2,7 @@ import { betterAuth } from "better-auth"
 import { drizzleAdapter } from "better-auth/adapters/drizzle"
 import { nextCookies } from "better-auth/next-js"
 import { admin, bearer, emailOTP } from "better-auth/plugins"
+import { generateRandomString } from "better-auth/crypto"
 import { expo } from "@better-auth/expo"
 
 import { db, schema } from "@/lib/db"
@@ -23,6 +24,15 @@ const mobileTrustedOrigins = (process.env.MOBILE_TRUSTED_ORIGINS ?? "")
   .split(",")
   .map((o) => o.trim())
   .filter(Boolean)
+
+// A single locked-down account for app-store reviewers. Passwordless OTP can't
+// be delivered to a reviewer's inbox, so this email always accepts REVIEWER_OTP.
+// Gated to one env-configured address: with REVIEWER_EMAIL unset, behavior is
+// unchanged (random codes for everyone). Unset it after review to disable.
+const reviewerEmail = process.env.REVIEWER_EMAIL?.trim().toLowerCase() || null
+const reviewerOtp = process.env.REVIEWER_OTP?.trim() || "000000"
+const isReviewer = (email: string) =>
+  !!reviewerEmail && email.trim().toLowerCase() === reviewerEmail
 
 export const auth = betterAuth({
   baseURL: process.env.BETTER_AUTH_URL,
@@ -73,8 +83,15 @@ export const auth = betterAuth({
     emailOTP({
       otpLength: 6,
       expiresIn: 60 * 10, // 10 minutes
+      // Reviewer email gets a fixed, known code; everyone else gets a random one
+      // (matches better-auth's default generator). Stored "plain" by default, so
+      // the fixed code is the real, verifiable OTP — no DB or hashing tricks.
+      generateOTP: ({ email }) =>
+        isReviewer(email) ? reviewerOtp : generateRandomString(6, "0-9"),
       // Creating an account and signing in are the same flow: enter the code.
       async sendVerificationOTP({ email, otp }) {
+        // Never email the reviewer's fixed code; send real codes for real users.
+        if (isReviewer(email)) return
         await sendOtpEmail(email, otp)
       },
     }),

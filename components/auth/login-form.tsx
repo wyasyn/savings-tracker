@@ -267,6 +267,15 @@ export default function LoginForm() {
         </a>
         .
       </p>
+
+      <p className="mt-3 text-center text-xs text-muted-foreground">
+        <a
+          href="/delete-account"
+          className="underline underline-offset-2 hover:text-foreground/80"
+        >
+          Delete your account
+        </a>
+      </p>
     </div>
   )
 }

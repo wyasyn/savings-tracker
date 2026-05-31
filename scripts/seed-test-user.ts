@@ -18,7 +18,10 @@ import { eq } from "drizzle-orm"
 import { db } from "../lib/db/index"
 import { user, goal, deposit } from "../lib/db/schema"
 
-const TEST_EMAIL = process.env.TEST_USER_EMAIL ?? "ywalum+test@gmail.com"
+// Defaults to the app-store reviewer account (REVIEWER_EMAIL) when set, so
+// `pnpm seed:test-user` populates the same account the OTP bypass unlocks.
+const TEST_EMAIL =
+  process.env.TEST_USER_EMAIL ?? process.env.REVIEWER_EMAIL ?? "ywalum+test@gmail.com"
 const TEST_USER_ID = "test-user-savings-demo" // fixed, so re-seeds are stable
 
 /** A calendar Date at noon UTC, so month bucketing never slips a day. */
