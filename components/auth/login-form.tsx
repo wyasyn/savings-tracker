@@ -8,6 +8,12 @@ import { authClient } from "@/lib/auth-client"
 import { Button } from "@/components/ui/button"
 import Image from "next/image"
 import { Input } from "../ui/input"
+import {
+  InputOTP,
+  InputOTPGroup,
+  InputOTPSeparator,
+  InputOTPSlot,
+} from "@/components/ui/input-otp"
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
@@ -35,7 +41,7 @@ function GoogleIcon() {
 }
 
 const inputClass =
-  "h-12 w-full rounded-xl border   px-4 text-base text-white outline-none transition-colors placeholder:text-neutral-500 focus-visible:border-orange-500 focus-visible:ring-2 focus-visible:ring-orange-500/40"
+  "h-12 w-full rounded-xl px-4 text-base outline-none transition-colors "
 
 export default function LoginForm() {
   const router = useRouter()
@@ -188,24 +194,31 @@ export default function LoginForm() {
           noValidate
         >
           <div className="space-y-2">
-            <label htmlFor="otp" className="text-sm font-medium ">
+            <label htmlFor="otp" className="block text-center text-sm font-medium ">
               6-digit code
             </label>
-            <input
+            <InputOTP
               id="otp"
-              inputMode="numeric"
-              autoComplete="one-time-code"
-              autoFocus
               maxLength={6}
+              autoFocus
               value={otp}
-              onChange={(e) => {
-                setOtp(e.target.value.replace(/\D/g, "").slice(0, 6))
+              onChange={(value) => {
+                setOtp(value)
                 if (error) setError(null)
               }}
-              placeholder="••••••"
-              aria-invalid={!!error}
-              className={`${inputClass} text-center text-2xl tracking-[0.5em]`}
-            />
+            >
+              <InputOTPGroup>
+                <InputOTPSlot index={0} />
+                <InputOTPSlot index={1} />
+                <InputOTPSlot index={2} />
+              </InputOTPGroup>
+              <InputOTPSeparator />
+              <InputOTPGroup>
+                <InputOTPSlot index={3} />
+                <InputOTPSlot index={4} />
+                <InputOTPSlot index={5} />
+              </InputOTPGroup>
+            </InputOTP>
           </div>
 
           {error && <p className="text-sm text-destructive ">{error}</p>}
