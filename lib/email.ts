@@ -35,3 +35,33 @@ export async function sendOtpEmail(email: string, otp: string) {
     throw new Error(`Failed to send sign-in code: ${error.message}`)
   }
 }
+
+/**
+ * Sends the link that confirms account deletion. better-auth only deletes the
+ * account once this `url` is visited. Falls back to logging in dev.
+ */
+export async function sendDeleteAccountEmail(email: string, url: string) {
+  if (!resend) {
+    console.info(`\n[savings-tracker] Delete-account link for ${email}: ${url}\n`)
+    return
+  }
+
+  const { error } = await resend.emails.send({
+    from: FROM,
+    to: email,
+    subject: "Confirm your Savings Tracker account deletion",
+    text: `You asked to delete your Savings Tracker account. This permanently removes your account along with all your goals and deposits, and can't be undone. Confirm here: ${url}\n\nIf you didn't request this, ignore this email and your account stays safe.`,
+    html: `
+      <div style="font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;max-width:420px;margin:0 auto;padding:32px 24px;color:#111">
+        <h1 style="font-size:18px;margin:0 0 8px">Confirm account deletion</h1>
+        <p style="font-size:14px;color:#555;margin:0 0 24px">You asked to delete your Savings Tracker account. This permanently removes your account along with all your goals and deposits, and can't be undone.</p>
+        <a href="${url}" style="display:inline-block;font-size:14px;font-weight:600;color:#fff;background:#ea580c;border-radius:12px;padding:12px 20px;text-decoration:none">Delete my account</a>
+        <p style="font-size:12px;color:#888;margin:24px 0 0">If you didn't request this, ignore this email and your account stays safe.</p>
+      </div>
+    `,
+  })
+
+  if (error) {
+    throw new Error(`Failed to send delete-account link: ${error.message}`)
+  }
+}

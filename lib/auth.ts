@@ -5,7 +5,7 @@ import { admin, bearer, emailOTP } from "better-auth/plugins"
 import { expo } from "@better-auth/expo"
 
 import { db, schema } from "@/lib/db"
-import { sendOtpEmail } from "@/lib/email"
+import { sendDeleteAccountEmail, sendOtpEmail } from "@/lib/email"
 import { eq } from "drizzle-orm"
 import { account, deposit, goal, session } from "./db/schema"
 
@@ -41,6 +41,18 @@ export const auth = betterAuth({
   user: {
     deleteUser: {
       enabled: true,
+      // Deletion is irreversible, so require the user to confirm via a link
+      // emailed to their address. better-auth only runs the deletion once the
+      // `url` below is visited (it carries a short-lived signed token).
+      sendDeleteAccountVerification: async ({
+        user,
+        url,
+      }: {
+        user: { email: string }
+        url: string
+      }) => {
+        await sendDeleteAccountEmail(user.email, url)
+      },
       before: async ({ userId }: { userId: string }) => {
         await db.delete(goal).where(eq(goal.userId, userId))
         await db.delete(deposit).where(eq(deposit.userId, userId))
