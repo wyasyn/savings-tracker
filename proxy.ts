@@ -22,8 +22,13 @@ export default function proxy(request: NextRequest) {
 }
 
 export const config = {
-  // Protect everything except auth API, the login page, legal pages, and assets.
+  // Protect pages only. ALL /api routes are excluded: the REST handlers under
+  // /api/v1 do their own auth (cookie OR Authorization: Bearer) and return JSON,
+  // and /api/auth is better-auth's own endpoint. Gating them here would bounce
+  // unauthenticated/cookieless requests (e.g. the mobile app's public
+  // /api/v1/reference call, or any Bearer-only request) to the HTML /login page
+  // with a 307 — which clients can't parse, hanging the app.
   matcher: [
-    "/((?!api/auth|login|terms|privacy|_next/static|_next/image|favicon.ico|icons).*)",
+    "/((?!api|login|terms|privacy|_next/static|_next/image|favicon.ico|icons).*)",
   ],
 }
